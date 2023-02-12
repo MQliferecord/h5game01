@@ -133,7 +133,7 @@ class Block {
         //获得球半径的向量
         let b_r = b_vec - new Vector(b.x, b.y + b.h / 2)
         //获得两中心指向的向量
-        let v = p_vec - b_vec
+        let v = vec - b_vec
         if (b.x + b.w / 2 > this.x + this.w / 2 && b.y + b.h / 2 < this.y + this.h / 2) {
             //如果球在挡板的右上方
             let h = new Vector(p.x + p.w, p.y)
@@ -141,6 +141,7 @@ class Block {
             let u = v - h
             //如果小于等于半径则发生碰撞
             if (u.dotProduct(u) <= b_r.dotProduct(b_r)) {
+                this.kill()
                 return true
             }
             return false
@@ -149,6 +150,7 @@ class Block {
             let h = new Vector(p.x, p.y)
             let u = v - h
             if (u.dotProduct(u) <= b_r.dotProduct(b_r)) {
+                this.kill()
                 return true
             }
             return false
@@ -157,6 +159,7 @@ class Block {
             let h = new Vector(p.x + p.w, p.y + p.h)
             let u = v - h
             if (u.dotProduct(u) <= b_r.dotProduct(b_r)) {
+                this.kill()
                 return true
             }
             return false
@@ -165,6 +168,7 @@ class Block {
             let h = new Vector(p.x, p.y + p.h)
             let u = v - h
             if (u.dotProduct(u) <= b_r.dotProduct(b_r)) {
+                this.kill()
                 return true
             }
             return false
@@ -172,7 +176,30 @@ class Block {
 
     }
     //计算小球，砖块碰撞后x轴速度方向
-    collideBlockHorn(ball) { }
+    collideBlockHorn(ball){
+        let b = ball//小球
+        let bk = this//砖块
+        //获得砖块的圆心
+        let vec = new Vector(bk.x + bk.w / 2, bk.y + bk.h / 2)
+        //获取球圆心
+        let b_vec = new Vector(b.x + b.w / 2, b.y + b.h / 2)
+        //获得两中心指向的向量
+        let v = vec - b_vec
+        //x轴模为1的正向量
+        let x_v = new Vector(1,0)
+        //中心向量在x轴的投影
+        let v_x = v.projectOn(x_v)
+        //中心向量x方向的长度
+        let v_x_len = Math.sqrt(v_x.dotProduct(v_x))
+        if(v_x_len>bk.w / 2&&v_x.dotProduct(x_v)>0){
+            //球和砖块左边以及四角的左边两个，x轴速度方向取反
+            return false
+        }else if(v_x_len>bk.w / 2&&v_x.dotProduct(x_v)<0){
+            //球和砖块右边以及四角的右边两个，x轴速度方向取反
+            return false
+        }
+        return true       
+    }
 }
 
 class Score {

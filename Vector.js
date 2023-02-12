@@ -28,4 +28,13 @@ class Vector{
     dotProduct({components}){
         return components.reduce((acc,component,index)=>acc+component*this.components[index],0)
     }
+    //归一化
+    normalize(){
+        return this.scaleBy(1/this.length())
+    }
+    //投影
+    projectOn(vec){
+        const normalized = vec.normalize()
+        return normalized.scaleBy(this.dotProduct(normalized))
+    }
 }
